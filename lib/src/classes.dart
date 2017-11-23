@@ -62,9 +62,9 @@ class BlobImage extends BaseImage {
     if (blob is File && name == null) name = (blob as File).name;
   }
 
-  FutureOr<BlobImage> toBlobImage(String mimeType, {int quality}) {
+  FutureOr<BlobImage> toBlobImage(String mimeType, {int quality}) async {
     if (blob.type == mimeType) return this;
-    return toCanvasImage().toBlobImage(mimeType, quality: quality);
+    return (await toCanvasImage()).toBlobImage(mimeType, quality: quality);
   }
 
   FutureOr<CanvasImage> toCanvasImage() async {
