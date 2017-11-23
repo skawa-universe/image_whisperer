@@ -27,9 +27,10 @@ Future<CanvasElement> _loadImage(String url) {
   Completer<CanvasElement> result = new Completer();
   ImageElement image = new ImageElement();
   image.onLoad.listen((_) {
-    CanvasElement canvas = new CanvasElement();
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
+    CanvasElement canvas = new CanvasElement(
+      width: image.naturalWidth,
+      height: image.naturalHeight,
+    );
     CanvasRenderingContext2D context = canvas.context2D;
     context.drawImage(image, 0, 0);
     result.complete(canvas);
@@ -128,15 +129,13 @@ Future<BaseImage> rotateIfNeeded(BaseImage image) async {
 }
 
 Future<CanvasElement> _scale(CanvasElement input, int targetWidth, int targetHeight,
-  {bool enableYielding: false}) async {
+    {bool enableYielding: false}) async {
   enableYielding ??= false;
   targetWidth ??= 0;
   targetHeight ??= 0;
   int sw = input.width;
   int sh = input.height;
-  CanvasElement canvas = new CanvasElement();
-  canvas.width = sw;
-  canvas.height = sh;
+  CanvasElement canvas = new CanvasElement(width: sw, height: sh);
   CanvasRenderingContext2D ctx = canvas.context2D;
   ctx.drawImage(input, 0, 0);
   ImageData sourceImageData = ctx.getImageData(0, 0, sw, sh);
@@ -236,11 +235,23 @@ class ImageProcessingPipeline {
       scale = math.sqrt(maxPixels / (width * height));
     }
     if ((scale - 1.0).abs() < scaleEpsilon) return image;
-    canvasImage = new CanvasImage(await _scale(
-        canvasImage.canvas, (width * scale).toInt(), (height * scale).toInt()),
-      name: image.name);
+    if (useNativeScaler ?? false) {
+      CanvasElement newCanvas = new CanvasElement(
+        width: (width * scale).toInt(),
+        height: (height * scale).toInt(),
+      );
+      newCanvas.context2D
+          .drawImageScaled(canvasImage.canvas, 0, 0, newCanvas.width, newCanvas.height);
+      canvasImage = new CanvasImage(newCanvas, name: image.name);
+    } else {
+      canvasImage = new CanvasImage(
+          await _scale(canvasImage.canvas, (width * scale).toInt(), (height * scale).toInt()),
+          name: image.name);
+    }
     return canvasImage;
   }
+
+  bool useNativeScaler = false;
 
   /// Maximum width of image
   int maxWidth;
