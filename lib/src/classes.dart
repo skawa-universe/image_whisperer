@@ -49,7 +49,7 @@ Future<Blob> _canvasToBlob(CanvasElement canvas, String mimeType, {int quality})
 }
 
 abstract class BaseImage {
-  BaseImage([String name]);
+  BaseImage([this.name]);
 
   String name;
 
