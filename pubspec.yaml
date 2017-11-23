@@ -1,5 +1,5 @@
 name: image_whisperer
-version: 0.9.0+2
+version: 0.9.1
 author: Peter Siroki <psiroki@skawa.hu>
 description: Rotate and resize images before uploading as necessary
 homepage: https://github.com/skawa-universe/image_whisperer
