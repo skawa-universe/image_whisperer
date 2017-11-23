@@ -1,0 +1,4 @@
+name: image_whisperer
+
+dependencies:
+  exifdart:
