@@ -8,6 +8,7 @@ import "package:exifdart/exifdart.dart";
 class ImageLoadError extends Error {
   ImageLoadError(this.event);
 
+  @override
   String toString() => event?.message ?? "Unknown error";
 
   final ErrorEvent event;
@@ -63,11 +64,14 @@ class BlobImage extends BaseImage {
     if (blob is File && name == null) name = (blob as File).name;
   }
 
+  @override
   FutureOr<BlobImage> toBlobImage(String mimeType, {int quality}) async {
     if (blob.type == mimeType) return this;
-    return (await toCanvasImage()).toBlobImage(mimeType, quality: quality);
+    CanvasImage canvasImage = await toCanvasImage();
+    return await canvasImage.toBlobImage(mimeType, quality: quality);
   }
 
+  @override
   FutureOr<CanvasImage> toCanvasImage() async {
     return new CanvasImage(await _convertBlobToCanvas(blob), name: name);
   }
@@ -78,8 +82,10 @@ class BlobImage extends BaseImage {
 class CanvasImage extends BaseImage {
   CanvasImage(this.canvas, {String name}) : super(name);
 
+  @override
   FutureOr<CanvasImage> toCanvasImage() => this;
 
+  @override
   FutureOr<BlobImage> toBlobImage(String mimeType, {int quality}) async {
     return new BlobImage(await _canvasToBlob(canvas, mimeType, quality: quality), name: name);
   }
@@ -215,7 +221,7 @@ class ImageProcessingPipeline {
   FutureOr<BaseImage> _convertIfNeeded(BaseImage image) async {
     if (!_force && image is BlobImage) return image;
     if (image is BlobImage && image.blob.type == _mimeType) return image;
-    return image.toBlobImage(_mimeType, quality: _quality);
+    return await image.toBlobImage(_mimeType, quality: _quality);
   }
 
   String _mimeType = "image/jpeg";
@@ -265,5 +271,5 @@ class ImageProcessingPipeline {
   set maxMegapixels(int value) => maxPixels = value * 1000000;
 
   /// Don't scale if it would mean less than 0.1% change in size
-  static const scaleEpsilon = 0.001;
+  static const double scaleEpsilon = 0.001;
 }

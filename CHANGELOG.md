@@ -1,3 +1,7 @@
+# 0.9.1+1
+
+Maintenance release.
+
 # 0.9.1
 
 - Added the option to use the not really recommended native scaler: it applies no
