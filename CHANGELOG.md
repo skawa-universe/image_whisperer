@@ -1,3 +1,7 @@
+# 0.9.1+2
+
+- Fixed handling of files without EXIF
+
 # 0.9.1+1
 
 Maintenance release.
