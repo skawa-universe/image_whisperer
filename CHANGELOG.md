@@ -1,3 +1,8 @@
+# 0.9.3
+
+- The pipeline can skip encoding the image to file and return with a `CanvasImage`
+  (or a `BlobImage` if no adjustment was needed at all)
+
 # 0.9.2
 
 - Added wrappers for `Url.createObjectUrl` and `Url.revokeObjectUrl`

@@ -233,14 +233,16 @@ class ImageProcessingPipeline {
 
   bool applyOrientation = true;
 
+  /// Require a [BlobImage] output from the pipeline (this is the default).
   void requireBlob(String mimeType, {int quality: 75, bool force: true}) {
+    disableConversion = false;
     _mimeType = mimeType ?? "image/jpeg";
     _quality = _mimeType == "image/jpeg" ? quality : null;
     _force = force ?? true;
   }
 
   FutureOr<BaseImage> _convertIfNeeded(BaseImage image) async {
-    if (!_force && image is BlobImage) return image;
+    if (disableConversion || !_force && image is BlobImage) return image;
     if (image is BlobImage && image.blob.type == _mimeType) return image;
     return await image.toBlobImage(_mimeType, quality: _quality);
   }
@@ -248,6 +250,9 @@ class ImageProcessingPipeline {
   String _mimeType = "image/jpeg";
   int _quality = 75;
   bool _force = false;
+
+  /// Disable encoding to a blob completely (default is `false`).
+  bool disableConversion = false;
 
   FutureOr<BaseImage> _resizeIfNeeded(BaseImage image) async {
     if (maxWidth == null && maxHeight == null && maxPixels == null) return image;
