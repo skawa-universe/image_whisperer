@@ -1,3 +1,9 @@
+# 0.9.2
+
+- Added wrappers for `Url.createObjectUrl` and `Url.revokeObjectUrl`
+  in `BlobImage`
+- Made a function private that was previously public by accident
+
 # 0.9.1+2
 
 - Fixed handling of files without EXIF

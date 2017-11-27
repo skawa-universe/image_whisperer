@@ -76,7 +76,27 @@ class BlobImage extends BaseImage {
     return new CanvasImage(await _convertBlobToCanvas(blob), name: name);
   }
 
+  /// Returns a blob URL, so the image can be displayed in an `<img>` tag.
+  ///
+  /// The blob URL is accessible until release or until the document is
+  /// destroyed (that is close or reload).
+  String get url {
+    if (_url == null) _url = Url.createObjectUrlFromBlob(blob);
+    return _url;
+  }
+
+  /// Releases the allocated blob URLs.
+  ///
+  /// Does nothing if there was no URL allocated for this `BlobImage`.
+  void releaseUrl() {
+    if (_url != null) {
+      Url.revokeObjectUrl(_url);
+      _url = null;
+    }
+  }
+
   final Blob blob;
+  String _url;
 }
 
 class CanvasImage extends BaseImage {
@@ -93,7 +113,7 @@ class CanvasImage extends BaseImage {
   final CanvasElement canvas;
 }
 
-Future<BaseImage> rotateIfNeeded(BaseImage image) async {
+Future<BaseImage> _rotateIfNeeded(BaseImage image) async {
   if (image is BlobImage) {
     return readExifFromBlob(image.blob).then((Map<String, dynamic> params) {
       params ??= {};
@@ -206,7 +226,7 @@ Future<CanvasElement> _scale(CanvasElement input, int targetWidth, int targetHei
 class ImageProcessingPipeline {
   Future<BaseImage> process(BaseImage image) {
     Future<BaseImage> result = new Future.sync(() => image);
-    if (applyOrientation ?? true) result = result.then(rotateIfNeeded);
+    if (applyOrientation ?? true) result = result.then(_rotateIfNeeded);
     result = result.then(_resizeIfNeeded).then(_convertIfNeeded);
     return result;
   }
