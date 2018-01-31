@@ -46,7 +46,16 @@ Future<CanvasElement> _loadImage(String url) {
 Future<Blob> _canvasToBlob(CanvasElement canvas, String mimeType, {int quality}) {
   Completer<Blob> result = new Completer();
   if (mimeType != "image/jpeg") quality = null;
-  canvas.toBlob(result.complete, mimeType, quality);
+  try {
+    canvas.toBlob(result.complete, mimeType, quality);
+  } on NoSuchMethodError {
+    String binStr = window.atob(canvas.toDataUrl(mimeType, quality).split(',')[1]);
+    Uint8List arr = new Uint8List(binStr.length);
+    for (var i = 0; i < binStr.length; i++) {
+      arr[i] = binStr.codeUnitAt(i);
+    }
+    result.complete(new Blob([arr], mimeType));
+  }
   return result.future;
 }
 
