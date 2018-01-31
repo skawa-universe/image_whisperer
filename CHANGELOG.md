@@ -1,3 +1,8 @@
+# 0.9.3+1
+
+- Added polyfill to fix IE11's lack of support of quality parameters in
+  `HTMLCanvasElement.toBlob`
+
 # 0.9.3
 
 - The pipeline can skip encoding the image to file and return with a `CanvasImage`
