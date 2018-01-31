@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:convert";
 import "dart:html";
 import "dart:math" as math;
 import "dart:typed_data";
@@ -49,12 +50,11 @@ Future<Blob> _canvasToBlob(CanvasElement canvas, String mimeType, {int quality})
   try {
     canvas.toBlob(result.complete, mimeType, quality);
   } on NoSuchMethodError {
-    String binStr = window.atob(canvas.toDataUrl(mimeType, quality).split(',')[1]);
-    Uint8List arr = new Uint8List(binStr.length);
-    for (var i = 0; i < binStr.length; i++) {
-      arr[i] = binStr.codeUnitAt(i);
-    }
-    result.complete(new Blob([arr], mimeType));
+    String dataUrl = canvas.toDataUrl(mimeType, quality);
+    int comma = dataUrl.indexOf(",");
+    List<int> byteList = BASE64.decode(dataUrl.substring(comma + 1));
+    Uint8List bytes = byteList is Uint8List ? byteList : new Uint8List.fromList(byteList);
+    return new Future.value(new Blob([bytes], mimeType));
   }
   return result.future;
 }
