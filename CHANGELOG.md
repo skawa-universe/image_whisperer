@@ -1,3 +1,12 @@
+# 0.10.0
+
+- bumped `exifdart` version
+- the library now requires Dart 2
+
+# 0.9.4
+
+- bumped `exifdart` version
+
 # 0.9.3+1
 
 - Added polyfill to fix IE11's lack of support of quality parameters in
