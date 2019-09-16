@@ -45,10 +45,9 @@ Future<CanvasElement> _loadImage(String url) {
 }
 
 Future<Blob> _canvasToBlob(CanvasElement canvas, String mimeType, {int quality}) {
-  Completer<Blob> result = new Completer();
   if (mimeType != "image/jpeg") quality = null;
   try {
-    canvas.toBlob(result.complete, mimeType, quality);
+    return canvas.toBlob(mimeType, quality);
   } on NoSuchMethodError {
     String dataUrl = canvas.toDataUrl(mimeType, quality);
     int comma = dataUrl.indexOf(",");
@@ -56,7 +55,6 @@ Future<Blob> _canvasToBlob(CanvasElement canvas, String mimeType, {int quality})
     Uint8List bytes = byteList is Uint8List ? byteList : new Uint8List.fromList(byteList);
     return new Future.value(new Blob([bytes], mimeType));
   }
-  return result.future;
 }
 
 abstract class BaseImage {

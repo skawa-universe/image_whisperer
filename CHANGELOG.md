@@ -1,3 +1,7 @@
+# 0.11.0
+
+- the library is updated to support and require Dart 2.2
+
 # 0.10.0
 
 - bumped `exifdart` version

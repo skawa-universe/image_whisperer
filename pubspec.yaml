@@ -1,11 +1,11 @@
 name: image_whisperer
-version: 0.10.0
+version: 0.11.0
 author: Peter Siroki <psiroki@skawa.hu>
 description: Rotate and resize images before uploading as necessary
 homepage: https://github.com/skawa-universe/image_whisperer
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.2.0 <3.0.0'
 
 dependencies:
   exifdart: ">=0.7.0 <0.8.0"
