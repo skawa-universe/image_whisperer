@@ -1,3 +1,7 @@
+# 0.11.1
+
+- detect and use the browsers internal rotation mechanism if available
+
 # 0.11.0
 
 - the library is updated to support and require Dart 2.2
