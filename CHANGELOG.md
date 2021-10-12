@@ -1,3 +1,7 @@
+# 0.11.1-dev.1
+
+- null safety dev release
+
 # 0.11.1
 
 - detect and use the browsers internal rotation mechanism if available
